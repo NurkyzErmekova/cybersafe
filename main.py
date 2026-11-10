@@ -7,11 +7,9 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 
-# 1. FastAPI тиркемеси
 app = FastAPI(title="CyberSafe Teen API")
 
 
-# 2. JSON файлынан база маалыматтарын жүктөө
 def init_knowledge_base():
     try:
         with open("cyber_safety_db.json", "r", encoding="utf-8") as f:
@@ -30,7 +28,6 @@ def init_knowledge_base():
 
 context = init_knowledge_base()
 
-# 3. Шаблон промпта жана LLM
 prompt_template = ChatPromptTemplate.from_messages([
     ("system", """Вы — эксперт по кибербезопасности для подростков. 
 Анализируйте входящую ситуацию, находите потенциальные угрозы и давайте понятные советы, опираясь на базу знаний.
@@ -43,7 +40,7 @@ prompt_template = ChatPromptTemplate.from_messages([
 llm = ChatOpenAI(
     model="gpt-4o-mini",
     temperature=0.3,
-    api_key="sk-proj-..."  # Өзүңүздүн ключ
+    api_key="sk-proj-..."
 )
 
 output_parser = StrOutputParser()
@@ -63,18 +60,15 @@ class CheckRequest(BaseModel):
     text: str
 
 
-# FastAPI POST эндипоинту (Postman жана Streamlit үчүн)
 @app.post("/check")
 def check_threat_api(request: CheckRequest):
     if not request.text.strip():
         raise HTTPException(status_code=400, detail="Текст не может быть пустым.")
 
     try:
-        # Эгер баланс жок болсо, төмөнкү mock_response'ту колдоно берсеңиз болот:
         response = chain.invoke(request.text)
         return {"status": "success", "analysis": response}
     except Exception as e:
-        # Тестирлөө үчүн заглушка (баланс жок болсо да иштеши үчүн)
         mock_response = (
             "🛡️ [Тестирлөө режими / Симуляция]\n"
             f"Анализ текста: «{request.text}»\n\n"

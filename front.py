@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-# Streamlit Веб-интерфейси
+
 st.set_page_config(page_title="CyberSafe Teen", page_icon="🛡️")
 st.title("🛡️ CyberSafe Teen — Ваша цифровая безопасность")
 st.caption("Анализатор фишинга, угроз в сети и правил цифровой гигиены (на базе JSON и ИИ)")
